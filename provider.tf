@@ -1,6 +1,6 @@
 provider "google" {
-  project     = "terraform-gcp-demo-ap"
-  credentials = file("\\credentials\\credentials.json")
-  region      = "us-central1"
-  zone        = "us-central1-c"
+  project     = var.project_id
+  credentials = file("${var.gcp_credentials}")
+  region      = var.gcp_region
+  zone        = var.gcp_zone
 }
