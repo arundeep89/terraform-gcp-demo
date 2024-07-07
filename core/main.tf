@@ -7,3 +7,9 @@ resource "google_storage_bucket" "default" {
     enabled = true
   }
 }
+
+resource "google_project_service" "demo_core_project_crm_service" {
+  project = var.project_id
+  service = "cloudresourcemanager.googleapis.com"
+  disable_dependent_services = true
+}
