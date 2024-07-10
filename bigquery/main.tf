@@ -4,46 +4,43 @@ resource "google_project_service" "demo_project_bigquery_service" {
   disable_dependent_services = true
 }
 
-
-resource "google_bigquery_dataset" "bronze_source1" {
-  dataset_id                  = "bronze_source1"
-  friendly_name               = "bronze_source1"
-  description                 = "This is a test description"
-  location                    = var.gcp_region
-  default_table_expiration_ms = 3600000
-
-  labels = {
-    env = "default"
-  }
+resource "time_sleep" "wait_120_seconds" {
+    depends_on = [ google_project_service.demo_project_bigquery_service ]
+    create_duration = "120s"
 }
 
-resource "google_bigquery_table" "source1_table1" {
-  dataset_id = google_bigquery_dataset.bronze_source1.dataset_id
-  table_id   = "table1"
 
-  time_partitioning {
-    type = "DAY"
+resource "google_bigquery_dataset" "datasets" {
+  for_each = local.datasetsMap
+ 
+  depends_on = [ time_sleep.wait_120_seconds ]
+
+  project       = var.project_id
+  dataset_id    = each.value["datasetId"]
+  friendly_name = each.value["datasetFriendlyName"]
+  description   = each.value["datasetDescription"]
+  location      = each.value["datasetRegion"]
+}
+
+resource "google_bigquery_table" "tables" {
+  for_each = {for idx, table in local.tables_flattened : "${table["datasetId"]}_${table["tableId"]}" => table}
+
+  project    = var.project_id
+  depends_on = [google_bigquery_dataset.datasets]
+  dataset_id = each.value["datasetId"]
+  table_id   = each.value["tableId"]
+  clustering = each.value["clustering"]
+
+  dynamic "time_partitioning" {
+    for_each = each.value["partitionType"] != null ? [1] : []
+
+    content {
+      type                     = each.value["partitionType"]
+      field                    = each.value["partitionField"]
+      expiration_ms            = each.value["expirationMs"]
+    }
   }
 
-  labels = {
-    env = "default"
-  }
-
-  schema = <<EOF
-[
-  {
-    "name": "order_id",
-    "type": "STRING",
-    "mode": "NULLABLE",
-    "description": "unique order id"
-  },
-  {
-    "name": "product_id",
-    "type": "STRING",
-    "mode": "NULLABLE",
-    "description": "product id"
-  }
-]
-EOF
-
+  schema = file("${path.module}/${each.value["tableSchemaPath"]}")
+  deletion_protection = false
 }

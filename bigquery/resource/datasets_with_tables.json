@@ -1,0 +1,31 @@
+[
+    {
+      "datasetId": "etsy_bronze",
+      "datasetRegion": "us-east1",
+      "datasetFriendlyName": "Dataset containing raw data",
+      "datasetDescription": "Raw Dataset description",
+      "tables": [
+        {
+          "tableId": "orders_raw",
+          "tableSchemaPath": "resource/schema/etsy_bronze/orders_raw.json",
+          "partitionType": "DAY",
+          "partitionField": "ingestionDate",
+          "clustering": [
+            "country"
+          ]
+        }
+      ]
+    },
+    {
+      "datasetId": "etsy_gold",
+      "datasetRegion": "us-east1",
+      "datasetFriendlyName": "Dataset containing domain data",
+      "datasetDescription": "Domain Dataset description",
+      "tables": [
+        {
+          "tableId": "orders_processed",
+          "tableSchemaPath": "resource/schema/etsy_gold/orders_processed.json"
+        }
+      ]
+    }
+  ]
