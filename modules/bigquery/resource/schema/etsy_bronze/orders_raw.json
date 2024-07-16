@@ -1,0 +1,32 @@
+[
+    {
+      "name": "country",
+      "type": "STRING",
+      "mode": "NULLABLE",
+      "description": "Country order was placed"
+    },
+    {
+      "name": "ingestionDate",
+      "type": "TIMESTAMP",
+      "mode": "NULLABLE",
+      "description": "Ingestion date"
+    },
+    {
+      "name": "order_id",
+      "type": "STRING",
+      "mode": "NULLABLE",
+      "description": "id of the order"
+    },
+    {
+      "name": "customer_id",
+      "type": "STRING",
+      "mode": "NULLABLE",
+      "description": "id of the customer"
+    },
+    {
+      "name": "order_amount",
+      "type": "FLOAT",
+      "mode": "NULLABLE",
+      "description": "total cost of order"
+    }
+  ]

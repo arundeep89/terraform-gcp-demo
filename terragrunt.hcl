@@ -1,5 +1,5 @@
 terraform {
-  source = "modules/storage/"
+  source = "main.tf"
 }
 
 generate "provider" {
@@ -13,4 +13,17 @@ generate "provider" {
      zone        = "us-east1-a"
   }
   EOF
+}
+
+remote_state {
+  backend  = "gcs"
+  generate = {
+    path      = "backend.tf"
+    if_exists = "overwrite"
+  }
+  config = {
+    bucket = "terraform-demo-core-ap-bucket-tfstate"
+    prefix = "resources/state"
+    credentials = "credentials.json"
+  }
 }
