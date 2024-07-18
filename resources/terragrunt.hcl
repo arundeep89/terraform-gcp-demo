@@ -19,7 +19,7 @@ remote_state {
   backend  = "gcs"
   generate = {
     path      = "backend.tf"
-    if_exists = "overwrite"
+    if_exists = "overwrite_terragrunt"
   }
   config = {
     bucket = "terraform-demo-core-ap-bucket-tfstate"
