@@ -1,5 +1,5 @@
 resource "google_project_service" "demo_project_bigquery_service" {
-  project = "terraform-demo-ap"
+  project = var.project_id
   service = "bigquery.googleapis.com"
   disable_dependent_services = true
 }
@@ -15,7 +15,7 @@ resource "google_bigquery_dataset" "datasets" {
  
   depends_on = [ time_sleep.wait_120_seconds ]
 
-  project       = "terraform-demo-ap"
+  project       = var.project_id
   dataset_id    = each.value["datasetId"]
   friendly_name = each.value["datasetFriendlyName"]
   description   = each.value["datasetDescription"]
@@ -25,7 +25,7 @@ resource "google_bigquery_dataset" "datasets" {
 resource "google_bigquery_table" "tables" {
   for_each = {for idx, table in local.tables_flattened : "${table["datasetId"]}_${table["tableId"]}" => table}
 
-  project    = "terraform-demo-ap"
+  project    = var.project_id
   depends_on = [google_bigquery_dataset.datasets]
   dataset_id = each.value["datasetId"]
   table_id   = each.value["tableId"]
