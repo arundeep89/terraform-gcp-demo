@@ -19,7 +19,7 @@ remote_state {
   }
   config = {
     bucket = "terraform-demo-core-ap-bucket-tfstate"
-    prefix = "resources/state"
+    prefix = "${path_relative_to_include()}"
     credentials = "credentials.json"
   }
 }
