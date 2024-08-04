@@ -1,3 +1,17 @@
+resource "google_project_service" "demo_project_gcp_services" {
+  for_each = toset(var.gcp_service_list)
+  service = each.key
+  project = var.project_id
+  disable_dependent_services = true
+}
+
+resource "time_sleep" "wait_60_seconds" {
+    depends_on = [ 
+      google_project_service.demo_project_gcp_services
+    ]
+    create_duration = "60s"
+}
+
 resource "google_storage_bucket" "cloud_function_bucket" {
     name     = "cloud-function-${var.project_id}"
     location = var.region
@@ -47,6 +61,7 @@ resource "google_cloudfunctions_function" "cloud_function" {
   }
   depends_on = [
     google_storage_bucket.cloud_function_bucket,
-    google_storage_bucket_object.zip
+    google_storage_bucket_object.zip,
+    time_sleep.wait_60_seconds
   ]
 }

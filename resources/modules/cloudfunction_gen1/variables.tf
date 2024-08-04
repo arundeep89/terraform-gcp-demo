@@ -5,11 +5,19 @@ variable "project_id" {
 
 variable "region" {
   type = string
-  default = "us-east1"
 }
 
 variable "service_account_email" {
-  type = string
-  default = "sa-terraform-core@terraform-demo-core-ap.iam.gserviceaccount.com"
-  
+  type = string  
+}
+
+variable "gcp_service_list" {
+  description ="The list of apis necessary for the project"
+  type = list(string)
+  default = [
+    "cloudfunctions.googleapis.com",
+    "cloudbuild.googleapis.com",
+    "logging.googleapis.com",
+    "pubsub.googleapis.com"
+  ]
 }
